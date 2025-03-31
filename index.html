@@ -20,11 +20,6 @@
             <div class="card-body">
                 <form id="calculadoraForm">
                     <div class="mb-3">
-                        <label for="potenciaCV" class="form-label">Potencia del Vehículo (CV)</label>
-                        <input type="number" class="form-control" id="potenciaCV" required>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Configuración de Ejes y Grupos</label>
                         <div class="grupos-container">
                             <div class="grupo-ejes card p-3 mb-3">
@@ -48,13 +43,13 @@
                         </button>
                     </div>
 
-                    <div class="alert alert-info mt-3">
+<!--                     <div class="alert alert-info mt-3">
                         <i class="fas fa-info-circle"></i> Información importante:
                         <ul class="mb-0">
                             <li>Para vehículos modelo 1999 en adelante, el eje separado debe ser direccional.</li>
                             <li>Los ejes levadizos deben tener un mecanismo que impida ser levantados cuando el vehículo está cargado.</li>
                         </ul>
-                    </div>
+                    </div> -->
 
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Calcular</button>
@@ -63,16 +58,16 @@
 
                 <div class="result-box d-none" id="resultados">
                     <h4 class="text-center mb-3">Resultados</h4>
-                    <div class="row">
+<!--                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>Peso máximo por ejes:</strong> <span id="pesoEjes">0</span> toneladas</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>Peso máximo por potencia:</strong> <span id="pesoPotencia">0</span> toneladas</p>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="alert alert-success text-center mb-3">
-                        <strong>Peso máximo permitido:</strong> <span id="pesoMaximo">0</span> toneladas
+                        <span id="pesoMaximo">0</span>
                     </div>
                     
                     <div class="explanation-box border-top pt-3">
@@ -99,6 +94,13 @@
         </div>
         <div class="text-center mt-3 text-muted">
             <small><i class="fas fa-road"></i> Según normativa argentina vigente</small>
+            <div class="mt-2">
+                <small>
+                    <a href="https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=818" target="_blank">Ley de tránsito</a><br>
+                    <a href="https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=37871" target="_blank">TRANSPORTE AUTOMOTOR DE CARGAS - DEFINICION Y CONCEPTOS GENERALES</a><br>
+                    <a href="https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=75178" target="_blank">Decreto Reglamentario 1035/2002 - LEY 24563 - REGLAMENTACION</a>
+                </small>
+            </div>
         </div>
     </div>
 

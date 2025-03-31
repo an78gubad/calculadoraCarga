@@ -3,8 +3,9 @@ const TEMPLATES = {
         <div class="mb-2">
             <label class="form-label">Tipo de Rodado</label>
             <select class="form-select subtype-select">
-                <option value="ruedas_individuales">Ruedas Individuales (6.000 kg)</option>
-                <option value="rodado_doble">Rodado Doble (10.500 kg)</option>
+                <option value="ruedas_individuales">S1 - EJE CON RUEDAS INDIVIDUALES (6.000 kg)</option>
+                <option value="rodado_doble">D1 - EJE CON RODADOS DOBLES (10.500 kg)</option>
+                <option value="superanchas">Cubiertas Superanchas (8.000 kg)</option>
             </select>
         </div>
     `,
@@ -12,9 +13,11 @@ const TEMPLATES = {
         <div class="mb-2">
             <label class="form-label">Tipo de Rodado</label>
             <select class="form-select subtype-select">
-                <option value="ruedas_individuales">Ruedas Individuales (10.000 kg)</option>
+                <option value="ruedas_individuales">S2 - DOS EJES CON RUEDAS INDIVIDUALES (10.000 kg)</option>
                 <option value="mixto">Mixto (14.000 kg)</option>
-                <option value="rodado_doble">Rodado Doble (18.000 kg)</option>
+                <option value="rodado_doble">D2 - DOS EJES CON RODADOS DOBLES (18.000 kg)</option>
+                <option value="superanchas">Cubiertas Superanchas (16.000 kg)</option>
+                <option value="rodado_doble_superanchas">Rodado Doble + Superanchas (17.000 kg)</option>
             </select>
         </div>
         <div class="mb-2">
@@ -26,7 +29,7 @@ const TEMPLATES = {
         <div class="mb-2">
             <label class="form-label">Tipo de Rodado</label>
             <select class="form-select subtype-select">
-                <option value="rodado_doble">Rodado Doble (25.500 kg)</option>
+                <option value="rodado_doble">D3 - TRES EJES CON RODADOS DOBLES (25.500 kg)</option>
             </select>
         </div>
         <div class="mb-2">
@@ -44,9 +47,9 @@ const TEMPLATES = {
             <div class="mb-2">
                 <label class="form-label">Tipo de Rodado</label>
                 <select class="form-select tandem-subtype-select">
-                    <option value="ruedas_individuales">Ruedas Individuales</option>
+                    <option value="ruedas_individuales">S2 - DOS EJES CON RUEDAS INDIVIDUALES</option>
                     <option value="mixto">Mixto</option>
-                    <option value="rodado_doble">Rodado Doble</option>
+                    <option value="rodado_doble">D2 - DOS EJES CON RODADOS DOBLES</option>
                 </select>
             </div>
             <div class="mb-2">
@@ -59,8 +62,8 @@ const TEMPLATES = {
             <div class="mb-2">
                 <label class="form-label">Tipo de Rodado</label>
                 <select class="form-select simple-subtype-select">
-                    <option value="ruedas_individuales">Ruedas Individuales</option>
-                    <option value="rodado_doble">Rodado Doble</option>
+                    <option value="ruedas_individuales">S1 - EJE CON RUEDAS INDIVIDUALES</option>
+                    <option value="rodado_doble">D1 - EJE CON RODADOS DOBLES</option>
                 </select>
             </div>
         </div>
@@ -74,10 +77,13 @@ const TEMPLATES = {
 const limitesPeso = {
     'eje_simple_ruedas_individuales': 6000,
     'eje_simple_rodado_doble': 10500,
+    'eje_simple_superanchas': 8000,
     'tandem_ruedas_individuales': 10000,
     'tandem_mixto': 14000,
     'tandem_rodado_doble': 18000,
-    'tridem_rodado_doble': 25500
+    'tandem_superanchas': 16000,
+    'tridem_rodado_doble': 25500,
+    'tandem_rodado_doble_superanchas': 17000
 };
 
 const PESO_MAXIMO_ABSOLUTO = 75; // toneladas
@@ -91,9 +97,171 @@ const VALIDACIONES = {
     tridem: {
         minDistancia: 1.20,
         maxDistancia: 2.40,
-        mensaje: "Las distancias entre ejes deben estar entre 1.20m y 2.40m"
+        minDistanciaTotal: 2.40,
+        maxDistanciaTotal: 4.80,
+        mensaje: "Las distancias entre ejes deben estar entre 1.20m y 2.40m",
+        mensajeTotal: "La suma de las distancias debe estar entre 2.40m y 4.80m"
     }
 };
+
+// Mover la función fuera del document.ready
+function actualizarCalculos() {
+    // Verificar que haya más de un grupo de ejes
+    if ($('.grupo-ejes').length <= 1) {
+        $('#resultados').addClass('d-none');
+        return;
+    }
+
+    // Verificar si hay distancias inválidas
+    let distanciasValidas = true;
+    $('.grupo-ejes').each(function() {
+        const tipo = $(this).find('.grupo-tipo').val();
+        
+        if (tipo === 'tandem') {
+            const distancia = parseFloat($(this).find('.distancia-input').val());
+            if (distancia && (distancia < VALIDACIONES.tandem.minDistancia || distancia > VALIDACIONES.tandem.maxDistancia)) {
+                distanciasValidas = false;
+                return false; // break the loop
+            }
+        } else if (tipo === 'tridem') {
+            const distancia1 = parseFloat($(this).find('.distancia1-input').val());
+            const distancia2 = parseFloat($(this).find('.distancia2-input').val());
+            const distanciaTotal = distancia1 + distancia2;
+            
+            if ((distancia1 && (distancia1 < VALIDACIONES.tridem.minDistancia || distancia1 > VALIDACIONES.tridem.maxDistancia)) ||
+                (distancia2 && (distancia2 < VALIDACIONES.tridem.minDistancia || distancia2 > VALIDACIONES.tridem.maxDistancia)) ||
+                (distancia1 && distancia2 && (distanciaTotal < VALIDACIONES.tridem.minDistanciaTotal || distanciaTotal > VALIDACIONES.tridem.maxDistanciaTotal))) {
+                distanciasValidas = false;
+                return false; // break the loop
+            }
+        }
+    });
+
+    if (!distanciasValidas) {
+        $('#resultados').addClass('d-none');
+        return;
+    }
+
+    const configuracionGrupos = [];
+    let todosGruposCompletos = true;
+
+    $('.grupo-ejes').each(function() {
+        if (!grupoEstaCompleto($(this))) {
+            todosGruposCompletos = false;
+            return false; // break the loop
+        }
+
+        const tipo = $(this).find('.grupo-tipo').val();
+        let grupo = {
+            groupType: tipo
+        };
+
+        switch(tipo) {
+            case 'simple':
+                grupo.subtype = $(this).find('.subtype-select').val();
+                break;
+            case 'tandem':
+                grupo.subtype = $(this).find('.subtype-select').val();
+                grupo.distancia = parseFloat($(this).find('.distancia-input').val());
+                break;
+            case 'tridem':
+                grupo.subtype = $(this).find('.subtype-select').val();
+                grupo.distancias = [
+                    parseFloat($(this).find('.distancia1-input').val()),
+                    parseFloat($(this).find('.distancia2-input').val())
+                ];
+                break;
+            case 'mixto':
+                grupo.tandem = {
+                    subtype: $(this).find('.tandem-subtype-select').val(),
+                    distancia: parseFloat($(this).find('.tandem-distancia-input').val())
+                };
+                grupo.independiente = {
+                    subtype: $(this).find('.simple-subtype-select').val()
+                };
+                grupo.distanciaEntre = parseFloat($(this).find('.distancia-entre-input').val());
+                break;
+        }
+        
+        configuracionGrupos.push(grupo);
+    });
+
+    if (!todosGruposCompletos || configuracionGrupos.length === 0) {
+        $('#resultados').addClass('d-none');
+        return;
+    }
+
+    const resultado = calcularPesoMaximo(configuracionGrupos);
+    
+    $('#pesoMaximo').html(`<strong>${resultado.configuracion}</strong><br><strong>Peso máximo permitido:</strong> ${resultado.pesoMaximoPermitido.toFixed(2)} toneladas - <strong>Potencia mínima requerida:</strong> ${Math.ceil(resultado.potenciaMinima)} CV`);
+
+    // Generar explicaciones
+    let explicacionEjes = 'Suma de los pesos máximos permitidos por eje:<br>';
+    configuracionGrupos.forEach((grupo, index) => {
+        const pesoGrupo = calcularPesoGrupo(grupo);
+        let nombreGrupo;
+        let codigo = obtenerCodigoConfiguracion(grupo);
+        
+        switch(grupo.groupType) {
+            case 'simple':
+                nombreGrupo = 'Eje Simple';
+                break;
+            case 'tandem':
+                nombreGrupo = 'Tándem';
+                break;
+            case 'tridem':
+                nombreGrupo = 'Trídem';
+                break;
+            case 'mixto':
+                nombreGrupo = 'Mixto';
+                break;
+        }
+        explicacionEjes += `→ Grupo ${index + 1} (${codigo} - ${nombreGrupo}): ${pesoGrupo} toneladas<br>`;
+    });
+    explicacionEjes += `<strong>Total por ejes: ${(resultado.pesoMaximoEjes / 1000).toFixed(2)} toneladas</strong>`;
+    
+    const relacionPesoPotencia = (resultado.pesoMaximoEjes / 1000) > 45 ? 6 : 4.25;
+    const explicacionPotencia = `Según la normativa, se requiere una relación peso-potencia mínima de ${relacionPesoPotencia} CV/t ${(resultado.pesoMaximoEjes / 1000) > 45 ? '(por superar las 45 toneladas)' : ''}.<br>
+        Para un peso máximo de ${(resultado.pesoMaximoEjes / 1000).toFixed(2)} toneladas:<br>
+        ${(resultado.pesoMaximoEjes / 1000).toFixed(2)} t × ${relacionPesoPotencia} CV/t = ${Math.ceil(resultado.potenciaMinima)} CV mínimos requeridos`;
+
+    const explicacionFinal = `Se considera:<br>
+        → Peso máximo por ejes: ${(resultado.pesoMaximoEjes / 1000).toFixed(2)} toneladas<br>
+        → Peso máximo absoluto: ${(resultado.pesoMaximoAbsoluto / 1000).toFixed(2)} toneladas<br>
+        <strong>Por lo tanto, el peso máximo permitido es ${resultado.pesoMaximoPermitido.toFixed(2)} toneladas</strong><br>
+        <strong>La potencia mínima requerida es ${Math.ceil(resultado.potenciaMinima)} CV</strong>`;
+
+    $('#explicacionEjes').html(explicacionEjes);
+    $('#explicacionPotencia').html(explicacionPotencia);
+    $('#explicacionFinal').html(explicacionFinal);
+    
+    $('#resultados').removeClass('d-none');
+}
+
+// También mover la función grupoEstaCompleto fuera del document.ready
+function grupoEstaCompleto($grupo) {
+    const tipo = $grupo.find('.grupo-tipo').val();
+    if (!tipo) return false;
+
+    switch(tipo) {
+        case 'simple':
+            return $grupo.find('.subtype-select').val() !== null;
+        case 'tandem':
+            return $grupo.find('.subtype-select').val() !== null && 
+                   $grupo.find('.distancia-input').val() !== '';
+        case 'tridem':
+            return $grupo.find('.subtype-select').val() !== null && 
+                   $grupo.find('.distancia1-input').val() !== '' &&
+                   $grupo.find('.distancia2-input').val() !== '';
+        case 'mixto':
+            return $grupo.find('.tandem-subtype-select').val() !== null &&
+                   $grupo.find('.tandem-distancia-input').val() !== '' &&
+                   $grupo.find('.simple-subtype-select').val() !== null &&
+                   $grupo.find('.distancia-entre-input').val() !== '';
+        default:
+            return false;
+    }
+}
 
 $(document).ready(function() {
     $('#agregarGrupo').click(function() {
@@ -131,119 +299,8 @@ $(document).ready(function() {
         $(this).closest('.grupo-ejes').remove();
     });
 
-    // Función para verificar si un grupo está completo
-    function grupoEstaCompleto($grupo) {
-        const tipo = $grupo.find('.grupo-tipo').val();
-        if (!tipo) return false;
-
-        switch(tipo) {
-            case 'simple':
-                return $grupo.find('.subtype-select').val() !== null;
-            case 'tandem':
-                return $grupo.find('.subtype-select').val() !== null && 
-                       $grupo.find('.distancia-input').val() !== '';
-            case 'tridem':
-                return $grupo.find('.subtype-select').val() !== null && 
-                       $grupo.find('.distancia1-input').val() !== '' &&
-                       $grupo.find('.distancia2-input').val() !== '';
-            case 'mixto':
-                return $grupo.find('.tandem-subtype-select').val() !== null &&
-                       $grupo.find('.tandem-distancia-input').val() !== '' &&
-                       $grupo.find('.simple-subtype-select').val() !== null &&
-                       $grupo.find('.distancia-entre-input').val() !== '';
-            default:
-                return false;
-        }
-    }
-
-    // Función para actualizar cálculos
-    function actualizarCalculos() {
-        const potenciaCV = parseFloat($('#potenciaCV').val());
-        if (!potenciaCV) return;
-
-        const configuracionGrupos = [];
-        let todosGruposCompletos = true;
-
-        $('.grupo-ejes').each(function() {
-            if (!grupoEstaCompleto($(this))) {
-                todosGruposCompletos = false;
-                return false; // break the loop
-            }
-
-            const tipo = $(this).find('.grupo-tipo').val();
-            let grupo = {
-                groupType: tipo
-            };
-
-            switch(tipo) {
-                case 'simple':
-                    grupo.subtype = $(this).find('.subtype-select').val();
-                    break;
-                case 'tandem':
-                    grupo.subtype = $(this).find('.subtype-select').val();
-                    grupo.distancia = parseFloat($(this).find('.distancia-input').val());
-                    break;
-                case 'tridem':
-                    grupo.subtype = $(this).find('.subtype-select').val();
-                    grupo.distancias = [
-                        parseFloat($(this).find('.distancia1-input').val()),
-                        parseFloat($(this).find('.distancia2-input').val())
-                    ];
-                    break;
-                case 'mixto':
-                    grupo.tandem = {
-                        subtype: $(this).find('.tandem-subtype-select').val(),
-                        distancia: parseFloat($(this).find('.tandem-distancia-input').val())
-                    };
-                    grupo.independiente = {
-                        subtype: $(this).find('.simple-subtype-select').val()
-                    };
-                    grupo.distanciaEntre = parseFloat($(this).find('.distancia-entre-input').val());
-                    break;
-            }
-            
-            configuracionGrupos.push(grupo);
-        });
-
-        if (!todosGruposCompletos || configuracionGrupos.length === 0) {
-            $('#resultados').addClass('d-none');
-            return;
-        }
-
-        const resultado = calcularPesoMaximo(potenciaCV, configuracionGrupos);
-        
-        $('#pesoEjes').text((resultado.pesoMaximoEjes / 1000).toFixed(2));
-        $('#pesoPotencia').text(resultado.pesoMaximoPotencia.toFixed(2));
-        $('#pesoMaximo').text(resultado.pesoMaximoPermitido.toFixed(2));
-
-        // Generar explicaciones
-        let explicacionEjes = 'Suma de los pesos máximos permitidos por eje:<br>';
-        configuracionGrupos.forEach((grupo, index) => {
-            const pesoGrupo = calcularPesoGrupo(grupo);
-            const nombreGrupo = $(".grupo-tipo option[value='" + grupo.groupType + "']").text().split('(')[0];
-            explicacionEjes += `→ Grupo ${index + 1} (${nombreGrupo}): ${pesoGrupo} toneladas<br>`;
-        });
-        explicacionEjes += `<strong>Total por ejes: ${(resultado.pesoMaximoEjes / 1000).toFixed(2)} toneladas</strong>`;
-        
-        const explicacionPotencia = `Según la normativa, se requiere una relación peso-potencia mínima de 4.25 CV/t.<br>
-            Con una potencia de ${potenciaCV} CV:<br>
-            ${potenciaCV} CV ÷ 4.25 CV/t = ${resultado.pesoMaximoPotencia.toFixed(2)} toneladas máximas por potencia`;
-
-        const explicacionFinal = `Se toma el menor valor entre:<br>
-            → Peso máximo por ejes: ${(resultado.pesoMaximoEjes / 1000).toFixed(2)} toneladas<br>
-            → Peso máximo por potencia: ${resultado.pesoMaximoPotencia.toFixed(2)} toneladas<br>
-            → Peso máximo absoluto: ${(resultado.pesoMaximoAbsoluto / 1000).toFixed(2)} toneladas<br>
-            <strong>Por lo tanto, el peso máximo permitido es ${resultado.pesoMaximoPermitido.toFixed(2)} toneladas</strong>`;
-
-        $('#explicacionEjes').html(explicacionEjes);
-        $('#explicacionPotencia').html(explicacionPotencia);
-        $('#explicacionFinal').html(explicacionFinal);
-        
-        $('#resultados').removeClass('d-none');
-    }
-
     // Eventos para actualización automática
-    $(document).on('change input', '#potenciaCV, .subtype-select, .grupo-tipo, .tandem-subtype-select, .simple-subtype-select', actualizarCalculos);
+    $(document).on('change input', '.subtype-select, .grupo-tipo, .tandem-subtype-select, .simple-subtype-select', actualizarCalculos);
     $(document).on('input', '.distancia-input, .distancia1-input, .distancia2-input, .tandem-distancia-input, .distancia-entre-input', actualizarCalculos);
 
     // Remover el evento submit del formulario ya que no lo necesitamos más
@@ -275,12 +332,14 @@ function calcularPesoGrupo(grupo) {
             if (grupo.distancia >= 1.20 && grupo.distancia <= 2.40) {
                 pesoGrupo = limitesPeso[grupo.groupType + '_' + grupo.subtype];
             } else if (grupo.distancia > 2.40 && grupo.subtype === 'rodado_doble') {
-                // Caso especial: dos ejes independientes con rodado doble > 2.4m
                 pesoGrupo = 21000; // 21 TN
             } else if (grupo.distancia > 2.40) {
-                // Si la distancia es mayor a 2.40, se tratan como ejes independientes
                 if (grupo.subtype === 'rodado_doble') {
                     pesoGrupo = 2 * limitesPeso['eje_simple_rodado_doble'];
+                } else if (grupo.subtype === 'superanchas') {
+                    pesoGrupo = 2 * limitesPeso['eje_simple_superanchas'];
+                } else if (grupo.subtype === 'rodado_doble_superanchas') {
+                    pesoGrupo = limitesPeso['tandem_rodado_doble_superanchas'];
                 } else {
                     pesoGrupo = 2 * limitesPeso['eje_simple_ruedas_individuales'];
                 }
@@ -340,29 +399,47 @@ function calcularPesoGrupo(grupo) {
     return pesoGrupo / 1000; // Convertir a toneladas
 }
 
-function calcularPesoMaximo(potenciaCV, configuracionGrupos) {
+function obtenerCodigoConfiguracion(grupo) {
+    switch(grupo.groupType) {
+        case 'simple':
+            return grupo.subtype === 'rodado_doble' ? 'D1' : 'S1';
+        case 'tandem':
+            return grupo.subtype === 'rodado_doble' ? 'D2' : 'S2';
+        case 'tridem':
+            return 'D3';
+        case 'mixto':
+            const tandemCodigo = grupo.tandem.subtype === 'rodado_doble' ? 'D2' : 'S2';
+            const simpleCodigo = grupo.independiente.subtype === 'rodado_doble' ? 'D1' : 'S1';
+            return `${tandemCodigo}-${simpleCodigo}`;
+    }
+}
+
+function calcularPesoMaximo(configuracionGrupos) {
     let pesoMaximoEjes = 0;
+    
+    // Generar código de configuración
+    const codigoConfiguracion = configuracionGrupos
+        .map(grupo => obtenerCodigoConfiguracion(grupo))
+        .join('-');
 
     configuracionGrupos.forEach(grupo => {
         pesoMaximoEjes += calcularPesoGrupo(grupo);
     });
 
-    const pesoMaximoPotencia = potenciaCV / 4.25;
-    const pesoMaximoPermitido = Math.min(
-        pesoMaximoEjes, 
-        pesoMaximoPotencia,
-        PESO_MAXIMO_ABSOLUTO
-    );
+    pesoMaximoEjes = Math.min(pesoMaximoEjes * 1000, PESO_MAXIMO_ABSOLUTO * 1000);
+    const relacionPesoPotencia = (pesoMaximoEjes / 1000) > 45 ? 6 : 4.25;
+    const potenciaMinima = Math.ceil((pesoMaximoEjes / 1000) * relacionPesoPotencia);
 
     return {
-        pesoMaximoEjes: pesoMaximoEjes * 1000,
-        pesoMaximoPotencia: pesoMaximoPotencia,
-        pesoMaximoPermitido: pesoMaximoPermitido,
-        pesoMaximoAbsoluto: PESO_MAXIMO_ABSOLUTO * 1000
+        pesoMaximoEjes: pesoMaximoEjes,
+        potenciaMinima: potenciaMinima,
+        pesoMaximoPermitido: pesoMaximoEjes / 1000,
+        pesoMaximoAbsoluto: PESO_MAXIMO_ABSOLUTO * 1000,
+        configuracion: `CONFIGURACIÓN ${codigoConfiguracion}`
     };
 }
 
-// Agregar validaciones visuales
+// Modificar la función de validación visual
 function mostrarValidacion($input, mensaje, esValido) {
     const $feedbackDiv = $input.siblings('.invalid-feedback');
     if (!$feedbackDiv.length) {
@@ -371,6 +448,11 @@ function mostrarValidacion($input, mensaje, esValido) {
     
     $input.toggleClass('is-invalid', !esValido);
     $input.toggleClass('is-valid', esValido);
+    
+    // Ocultar resultados si hay un valor inválido
+    if (!esValido && $input.val() !== '') {
+        $('#resultados').addClass('d-none');
+    }
 }
 
 // Modificar el evento de cambio para inputs de distancia
@@ -379,9 +461,27 @@ $(document).on('input', '.distancia-input, .distancia1-input, .distancia2-input,
     const $grupo = $(this).closest('.grupo-ejes');
     const tipo = $grupo.find('.grupo-tipo').val();
     
-    if (tipo === 'tandem' || tipo === 'tridem') {
-        const esValido = valor >= VALIDACIONES[tipo].minDistancia && valor <= VALIDACIONES[tipo].maxDistancia;
+    if (tipo === 'tandem') {
+        const esValido = !valor || (valor >= VALIDACIONES[tipo].minDistancia && valor <= VALIDACIONES[tipo].maxDistancia);
         mostrarValidacion($(this), VALIDACIONES[tipo].mensaje, esValido);
+    } else if (tipo === 'tridem') {
+        const distancia1 = parseFloat($grupo.find('.distancia1-input').val()) || 0;
+        const distancia2 = parseFloat($grupo.find('.distancia2-input').val()) || 0;
+        const distanciaTotal = distancia1 + distancia2;
+        
+        // Validar distancia individual
+        const esValidoIndividual = !valor || (valor >= VALIDACIONES[tipo].minDistancia && valor <= VALIDACIONES[tipo].maxDistancia);
+        mostrarValidacion($(this), VALIDACIONES[tipo].mensaje, esValidoIndividual);
+        
+        // Validar suma total solo si ambos campos tienen valor
+        if (distancia1 && distancia2) {
+            const esValidoTotal = distanciaTotal >= VALIDACIONES[tipo].minDistanciaTotal && 
+                                distanciaTotal <= VALIDACIONES[tipo].maxDistanciaTotal;
+            
+            // Mostrar validación en ambos campos
+            mostrarValidacion($grupo.find('.distancia1-input'), VALIDACIONES[tipo].mensajeTotal, esValidoTotal);
+            mostrarValidacion($grupo.find('.distancia2-input'), VALIDACIONES[tipo].mensajeTotal, esValidoTotal);
+        }
     }
     
     actualizarCalculos();
