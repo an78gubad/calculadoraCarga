@@ -136,6 +136,8 @@ function actualizarCalculos() {
     // Limpiar el contenedor de imágenes y configuraciones antes de agregar nuevas
     $('#contenedor-imagenes').empty();
     $('#pesoMaximo-config').find('div').remove(); // Limpiar configuraciones anteriores
+    $('#aclaraciones').empty(); // Limpiar aclaraciones anteriores
+    $("#toleranciasAclaracion").removeClass("d-none");
 
     if ($('.grupo-ejes').length <= 1) {
         $('#pesoMaximo-config').text('Configure los grupos de ejes');
@@ -313,6 +315,36 @@ function actualizarCalculos() {
     } else {
         $('#contenedor-imagenes').empty(); // Limpiar si no hay coincidencias
     }
+
+    // Aclaraciones según configuraciones específicas
+    let aclaracion = '';
+
+    if (configuracionCodigo === 'S1-D2-D1-D1') {
+        aclaracion = "La configuración identificada en el orden N° 23 puede adoptar la disposición de ejes descripta en la configuración N° 13.";
+    } else if (configuracionCodigo === 'S1-D2-D2-D2') {
+        aclaracion = `La configuración de Bitrén identifica en el orden 27, sólo podrá circular sin Permiso de Tránsito y con libre circulación en rutas nacionales, siempre que transporte carga indivisible. El tipo de carga considerada como indivisible será establecida por normas complementarias.<br><br>
+        Configuración 27: VEHÍCULOS DE TRANSPORTE DE CARGAS QUE NO REQUIEREN PERMISO DE TRÁNSITO, PERO SOLO PUEDEN CIRCULAR POR CORREDORES EN RUTAS NACIONALES DEFINIDOS POR LA DIRECCIÓN NACIONAL DE VIALIDAD.<br>
+        - La configuración de vehículo Bitrén, identificada en el orden Nº 27, que transporte carga de tipo divisible deberá circular en forma restringida por corredores, en idénticas condiciones que la configuración de vehículo Bitrén, identificada en el orden Nº 28. El tipo de carga considerada como divisible será establecida por normas complementarias.<br>
+    `;
+    } else if (configuracionCodigo === 'S1-D2-D3') {
+        aclaracion = "Los equipos con configuración S1-D2-D3 dotados con suspensión neumática en el tándem del tractor y en el tridem del semirremolque estarán autorizados a un Peso Bruto Total Combinado de CINCUENTA Y DOS TONELADAS (52 t).";
+    } else if (configuracionCodigo === 'S1-D2-D3-D3') {
+        aclaracion = `
+            Configuración 27: VEHÍCULOS DE TRANSPORTE DE CARGAS QUE NO REQUIEREN PERMISO DE TRÁNSITO, PERO SOLO PUEDEN CIRCULAR POR CORREDORES EN RUTAS NACIONALES DEFINIDOS POR LA DIRECCIÓN NACIONAL DE VIALIDAD.<br>
+            - La configuración de vehículo Bitrén, identificada en el orden Nº 27, que transporte carga de tipo divisible deberá circular en forma restringida por corredores, en idénticas condiciones que la configuración de vehículo Bitrén, identificada en el orden Nº 28. El tipo de carga considerada como divisible será establecida por normas complementarias.<br>
+            Configuración 28: VEHÍCULOS DE TRANSPORTE DE CARGAS QUE REQUIEREN PERMISO DE TRÁNSITO DE LA DIRECCIÓN NACIONAL DE VIALIDAD PARA LA CIRCULACIÓN EN RUTAS NACIONALES.
+        `;
+    } else if (configuracionCodigo.endsWith('D1-D1-D1')) {
+        aclaracion = "Los semirremolques con configuración D1-D1-D1 deberán contar con suspensión neumática en todos los ejes y no se admitirá la reconversión o modificación de equipos usados.";
+    }
+
+    // Mostrar aclaraciones específicas
+    if (aclaracion) {
+        $('#aclaraciones').html(`<div class="alert alert-info">${aclaracion}</div>`);
+    }
+
+
+    $("#toleranciasAclaracion").removeClass("d-none");
 }
 
 // También mover la función grupoEstaCompleto fuera del document.ready
