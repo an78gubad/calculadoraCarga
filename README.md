@@ -20,6 +20,12 @@ Herramienta web para calcular la carga máxima permitida en vehículos de transp
   - Visualizar resultados detallados
   - Ver explicación paso a paso del cálculo
 
+- Carga de configuraciones desde un archivo CSV para personalizar los límites de peso y dimensiones.
+- Actualización automática de resultados al modificar las configuraciones de ejes.
+- Validación visual de entradas con mensajes de error claros.
+- Opción para reiniciar la calculadora y limpiar todas las configuraciones.
+- Soporte para configuraciones predefinidas mediante botones rápidos.
+
 ## Normativa Aplicada
 
 Los cálculos se basan en la siguiente legislación argentina:
