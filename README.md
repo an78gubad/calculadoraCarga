@@ -2,6 +2,10 @@
 
 Herramienta web para calcular la carga máxima permitida en vehículos de transporte de carga en Argentina, según la configuración de ejes y la normativa vigente.
 
+## Aclaración Legal
+
+Esta calculadora es solo un asistente para ayudar en el cálculo de la carga máxima permitida. No se garantiza la precisión de los resultados, y se recomienda revisar la normativa vigente y actualizada para asegurar el cumplimiento de las regulaciones. El uso de esta herramienta es bajo su propio riesgo, y el autor no asume ninguna responsabilidad legal por el uso incorrecto de la información proporcionada.
+
 ## Características
 
 - Cálculo automático del peso máximo permitido según:
