@@ -27,6 +27,26 @@
             </div>
         </div>
 
+        <!-- Instrucciones movidas aquí -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-info-circle text-primary"></i> Cómo usar la calculadora:</span>
+                            <button class="btn btn-link" id="toggleInstrucciones">Mostrar Instrucciones</button>
+                        </h5>
+                        <ol class="mb-0" id="instrucciones" style="display: none;">
+                            <li>Use los botones rápidos (S1, D1, S2, D2, D3) para agregar configuraciones predefinidas, o</li>
+                            <li>Agregue grupos de ejes manualmente con el botón "Agregar grupo de ejes"</li>
+                            <li>Para cada grupo, seleccione el tipo y complete la información requerida</li>
+                            <li>Los resultados se actualizarán automáticamente en el panel derecho</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Columnas principales -->
         <div class="row mb-4">
             <!-- Columna izquierda - Configuración -->
@@ -156,27 +176,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Instrucciones movidas aquí -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-info-circle text-primary"></i>
-                            Cómo usar la calculadora:
-                        </h5>
-                        <ol class="mb-0">
-                            <li>Use los botones rápidos (S1, D1, S2, D2, D3) para agregar configuraciones predefinidas, o</li>
-                            <li>Agregue grupos de ejes manualmente con el botón "Agregar grupo de ejes"</li>
-                            <li>Para cada grupo, seleccione el tipo y complete la información requerida</li>
-                            <li>Los resultados se actualizarán automáticamente en el panel derecho</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Aclaración Legal -->
         <div class="row mb-4">
             <div class="col-12">
@@ -207,5 +206,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Script para mostrar/ocultar instrucciones
+        document.getElementById('toggleInstrucciones').addEventListener('click', function() {
+            const instrucciones = document.getElementById('instrucciones');
+            if (instrucciones.style.display === 'none') {
+                instrucciones.style.display = 'block';
+                this.textContent = 'Ocultar Instrucciones';
+            } else {
+                instrucciones.style.display = 'none';
+                this.textContent = 'Mostrar Instrucciones';
+            }
+        });
+    </script>
 </body>
 </html>
