@@ -1,7 +1,8 @@
 body {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-                    url('https://img.freepik.com/free-vector/highway-road-desert-landscape-evening_107791-10161.jpg');
+    background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+                    url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7');
     background-size: cover;
+    background-position: center;
     background-attachment: fixed;
 }
 
@@ -99,4 +100,219 @@ body {
 .eliminar-eje:hover {
     background-color: #e74c3c !important;
     color: white !important;
-} 
+}
+
+/* Nuevos estilos para el layout dividido */
+.container-fluid {
+    max-width: 1800px;
+}
+
+.config-column, .results-column {
+    height: calc(100vh - 250px);
+}
+
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.config-body {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.results-body {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.grupos-container {
+    margin-bottom: 1rem;
+}
+
+#resultados {
+    display: block !important;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .config-column, .results-column {
+        height: auto;
+        margin-bottom: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+}
+
+/* Ajustes visuales adicionales */
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #ffc107;
+}
+
+.main-title {
+    font-size: 1.5rem;
+}
+
+.explanation-box {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+/* Estilos para el header */
+h1 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+h1 i {
+    margin-right: 15px;
+}
+
+.lead {
+    color: #34495e;
+}
+
+.instructions .card {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.instructions ol {
+    padding-left: 1.2rem;
+}
+
+.instructions ol li {
+    margin-bottom: 0.5rem;
+}
+
+.instructions ol li:last-child {
+    margin-bottom: 0;
+}
+
+/* Estilos para las instrucciones */
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.card-title i {
+    margin-right: 10px;
+}
+
+ol {
+    color: #34495e;
+    padding-left: 1.2rem;
+}
+
+ol li {
+    margin-bottom: 0.5rem;
+}
+
+ol li:last-child {
+    margin-bottom: 0;
+}
+
+/* Estilos para el resultado principal */
+.resultado-principal {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.configuracion {
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    margin-bottom: 1rem;
+}
+
+.configuracion i {
+    margin-right: 10px;
+    color: #ffd700;
+}
+
+.peso-container, .potencia-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+}
+
+.peso-container {
+    background-color: #28a745;
+    border: 2px solid #1e7e34;
+    padding: 1rem;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.potencia-container {
+    background-color: #3498db;
+    border: 2px solid #2980b9;
+    padding: 1rem;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.peso-label, .potencia-label {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.peso-label i, .potencia-label i {
+    margin-right: 10px;
+    color: #ffd700;
+}
+
+.peso-valor, .potencia-valor {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffd700;
+}
+
+.potencia-valor {
+    color: red;
+}
+
+.potencia-label i {
+    color: red;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+    .resultado-principal {
+        padding: 1rem;
+    }
+    
+    .configuracion {
+        font-size: 1.2rem;
+    }
+    
+    .peso-label, .potencia-label {
+        font-size: 1rem;
+    }
+    
+    .peso-valor, .potencia-valor {
+        font-size: 1.1rem;
+    }
+}
+
+#contenedor-imagenes img {
+    max-width: 50%; /* Ajusta el porcentaje según sea necesario */
+    height: auto; /* Mantiene la proporción de la imagen */
+}

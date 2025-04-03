@@ -9,89 +9,166 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container py-5">
-        <div class="card shadow">
-            <div class="card-header text-center">
-                <h1 class="main-title mb-0">
-                    <i class="fas fa-truck"></i>
-                    Calculadora de Carga para Transportes
-                </h1>
+    <div class="container-fluid py-3">
+        <!-- Header simplificado -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h1 class="text-center mb-3">
+                            <i class="fas fa-truck-moving text-warning"></i>
+                            Calculadora de Pesos por Eje
+                        </h1>
+                        <p class="lead text-center mb-0">
+                            Calcule el peso máximo permitido y la potencia mínima requerida según la configuración de ejes de su vehículo.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <form id="calculadoraForm">
-                    <div class="mb-3">
-                        <label class="form-label">Configuración de Ejes y Grupos</label>
-                        <div class="grupos-container">
-                            <div class="grupo-ejes card p-3 mb-3">
-                                <div class="mb-2">
-                                    <select class="form-select grupo-tipo">
-                                        <option value="">Seleccione tipo de grupo</option>
-                                        <option value="simple">Eje Simple</option>
-                                        <option value="tandem">Tándem (2 ejes)</option>
-                                        <option value="tridem">Trídem (3 ejes)</option>
-                                        <option value="mixto">Mixto (Tándem + Simple)</option>
-                                    </select>
+        </div>
+
+        <!-- Columnas principales -->
+        <div class="row mb-4">
+            <!-- Columna izquierda - Configuración -->
+            <div class="col-md-6 config-column">
+                <div class="card shadow h-100">
+                    <div class="card-header">
+                        <h2 class="main-title mb-0">
+                            <i class="fas fa-truck"></i>
+                            Configuración de Ejes
+                        </h2>
+                    </div>
+                    <div class="card-body config-body">
+                        <form id="calculadoraForm">
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Configuraciones rápidas">
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="simple" data-subtipo="ruedas_individuales">
+                                        <i class="fas fa-circle"></i> S1
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="simple" data-subtipo="rodado_doble">
+                                        <i class="fas fa-circle"></i> D1
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tandem" data-subtipo="ruedas_individuales">
+                                        <i class="fas fa-circle"></i><i class="fas fa-circle"></i> S2
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tandem" data-subtipo="rodado_doble">
+                                        <i class="fas fa-circle"></i><i class="fas fa-circle"></i> D2
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tridem" data-subtipo="rodado_doble">
+                                        <i class="fas fa-circle"></i><i class="fas fa-circle"></i><i class="fas fa-circle"></i> D3
+                                    </button>
                                 </div>
-                                
-                                <div class="configuracion-grupo">
-                                    <!-- Los campos se cargarán dinámicamente según el tipo seleccionado -->
+                                <button type="button" class="btn btn-danger btn-sm" id="reiniciarCalculadora">
+                                    <i class="fas fa-trash-alt"></i> Limpiar todo
+                                </button>
+                            </div>
+                            <div class="grupos-container">
+                                <div class="grupo-ejes card p-3 mb-3">
+                                    <div class="mb-2">
+                                        <select class="form-select grupo-tipo">
+                                            <option value="">Seleccione tipo de grupo</option>
+                                            <option value="simple">Eje Simple</option>
+                                            <option value="tandem">Tándem (2 ejes)</option>
+                                            <option value="tridem">Trídem (3 ejes)</option>
+                                            <option value="mixto">Mixto (Tándem + Simple)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="configuracion-grupo">
+                                        <!-- Los campos se cargarán dinámicamente según el tipo seleccionado -->
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <button type="button" class="btn btn-secondary btn-sm" id="agregarGrupo">
-                            <i class="fas fa-plus"></i> Agregar grupo de ejes
-                        </button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="agregarGrupo">
+                                <i class="fas fa-plus"></i> Agregar grupo de ejes
+                            </button>
+                        </form>
                     </div>
+                </div>
+            </div>
 
-<!--                     <div class="alert alert-info mt-3">
-                        <i class="fas fa-info-circle"></i> Información importante:
-                        <ul class="mb-0">
-                            <li>Para vehículos modelo 1999 en adelante, el eje separado debe ser direccional.</li>
-                            <li>Los ejes levadizos deben tener un mecanismo que impida ser levantados cuando el vehículo está cargado.</li>
-                        </ul>
-                    </div> -->
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Calcular</button>
+            <!-- Columna derecha - Resultados -->
+            <div class="col-md-6 results-column">
+                <div class="card shadow h-100">
+                    <div class="card-header">
+                        <h2 class="main-title mb-0">
+                            <i class="fas fa-calculator"></i>
+                            Resultados
+                        </h2>
                     </div>
-                </form>
-
-                <div class="result-box d-none" id="resultados">
-                    <h4 class="text-center mb-3">Resultados</h4>
-<!--                     <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Peso máximo por ejes:</strong> <span id="pesoEjes">0</span> toneladas</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Peso máximo por potencia:</strong> <span id="pesoPotencia">0</span> toneladas</p>
-                        </div>
-                    </div> -->
-                    <div class="alert alert-success text-center mb-3">
-                        <span id="pesoMaximo">0</span>
-                    </div>
-                    
-                    <div class="explanation-box border-top pt-3">
-                        <h5><i class="fas fa-info-circle text-primary"></i> Explicación del cálculo:</h5>
-                        <div id="explicacionCalculo" class="mt-3">
-                            <ol class="explanation-list">
-                                <li class="mb-2">
-                                    <strong>Cálculo por ejes:</strong>
-                                    <div id="explicacionEjes" class="text-muted ps-3"></div>
-                                </li>
-                                <li class="mb-2">
-                                    <strong>Cálculo por potencia:</strong>
-                                    <div id="explicacionPotencia" class="text-muted ps-3"></div>
-                                </li>
-                                <li class="mb-2">
-                                    <strong>Determinación del peso final:</strong>
-                                    <div id="explicacionFinal" class="text-muted ps-3"></div>
-                                </li>
-                            </ol>
+                    <div class="card-body results-body">
+                        <div id="resultados">
+                            <div class="resultado-principal mb-4">
+                                <div class="configuracion mb-2">
+                                    <i class="fas fa-cogs"></i>
+                                    <span id="pesoMaximo-config">Configure los grupos de ejes</span>
+                                </div>
+                                <div class="image-container text-center mb-4" id="contenedor-imagenes">
+                                    <!-- Las imágenes se agregarán aquí dinámicamente -->
+                                </div>
+                                <div class="peso-container">
+                                    <div class="peso-label">
+                                        <i class="fas fa-weight-hanging"></i>
+                                        Peso máximo permitido:
+                                    </div>
+                                    <div class="peso-valor" id="pesoMaximo-peso">--</div>
+                                </div>
+                                <div class="potencia-container">
+                                    <div class="potencia-label">
+                                        <i class="fas fa-horse"></i>
+                                        Potencia mínima requerida:
+                                    </div>
+                                    <div class="potencia-valor" id="pesoMaximo-potencia">--</div>
+                                </div>
+                            </div>
+                           
+                            
+                            <div class="explanation-box">
+                                <h5><i class="fas fa-info-circle text-primary"></i> Explicación del cálculo:</h5>
+                                <div id="explicacionCalculo" class="mt-3">
+                                    <ol class="explanation-list">
+                                        <li class="mb-2">
+                                            <strong>Cálculo por ejes:</strong>
+                                            <div id="explicacionEjes" class="text-muted ps-3"></div>
+                                        </li>
+                                        <li class="mb-2">
+                                            <strong>Cálculo de potencia:</strong>
+                                            <div id="explicacionPotencia" class="text-muted ps-3"></div>
+                                        </li>
+                                        <li class="mb-2">
+                                            <strong>Determinación del peso final:</strong>
+                                            <div id="explicacionFinal" class="text-muted ps-3"></div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Instrucciones movidas aquí -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-info-circle text-primary"></i>
+                            Cómo usar la calculadora:
+                        </h5>
+                        <ol class="mb-0">
+                            <li>Use los botones rápidos (S1, D1, S2, D2, D3) para agregar configuraciones predefinidas, o</li>
+                            <li>Agregue grupos de ejes manualmente con el botón "Agregar grupo de ejes"</li>
+                            <li>Para cada grupo, seleccione el tipo y complete la información requerida</li>
+                            <li>Los resultados se actualizarán automáticamente en el panel derecho</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enlaces a normativas -->
         <div class="text-center mt-3 text-muted">
             <small><i class="fas fa-road"></i> Según normativa argentina vigente</small>
             <div class="mt-2">
