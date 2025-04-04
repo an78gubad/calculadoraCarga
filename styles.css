@@ -4,6 +4,8 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    color: #333;
+    background-color: #f8f9fa;
 }
 
 .container {
@@ -227,6 +229,11 @@ ol li:last-child {
     padding: 1.5rem;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.resultado-principal:hover {
+    transform: scale(1.02); /* Efecto de aumento al pasar el mouse */
 }
 
 .configuracion {
@@ -313,6 +320,46 @@ ol li:last-child {
 }
 
 #contenedor-imagenes img {
-    max-width: 50%; /* Ajusta el porcentaje según sea necesario */
+    max-width: 70%; /* Ajusta el porcentaje según sea necesario */
     height: auto; /* Mantiene la proporción de la imagen */
+    border-radius: 10px; /* Bordes redondeados */
+    transition: transform 0.3s;
+}
+
+#contenedor-imagenes img:hover {
+    transform: scale(1.05); /* Efecto de aumento al pasar el mouse */
+}
+
+/* Estilos para botones */
+.btn {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    background-color: #ffc107; /* Color de fondo al pasar el mouse */
+    transform: scale(1.05); /* Efecto de aumento */
+}
+
+/* Estilos para las instrucciones */
+.instructions {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.instructions h5 {
+    margin-bottom: 10px;
+}
+
+/* Estilos para el mensaje de aclaración */
+.alert-warning {
+    background-color: #ffeb3b; /* Color de fondo */
+    color: #000; /* Color del texto */
+    border: 1px solid #ffc107; /* Borde */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 15px; /* Espaciado interno */
+    margin-top: 20px; /* Margen superior */
 }

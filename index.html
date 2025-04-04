@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container-fluid py-3">
+    <div class="container-fluid py-3" role="main">
         <!-- Header simplificado -->
         <div class="row mb-4">
             <div class="col-12">
@@ -30,11 +30,11 @@
         <!-- Instrucciones movidas aquí -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow">
+                <div class="card shadow instructions" aria-labelledby="instrucciones-title">
                     <div class="card-body">
-                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                        <h5 id="instrucciones-title" class="card-title d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-info-circle text-primary"></i> Cómo usar la calculadora:</span>
-                            <button class="btn btn-link" id="toggleInstrucciones">Mostrar Instrucciones</button>
+                            <button class="btn btn-link" id="toggleInstrucciones" aria-expanded="false" aria-controls="instrucciones">Mostrar Instrucciones</button>
                         </h5>
                         <ol class="mb-0" id="instrucciones" style="display: none;">
                             <li>Use los botones rápidos (S1, D1, S2, D2, D3) para agregar configuraciones predefinidas, o</li>
@@ -59,33 +59,36 @@
                         </h2>
                     </div>
                     <div class="card-body config-body">
-                        <form id="calculadoraForm">
+                        <form id="calculadoraForm" aria-labelledby="form-title">
+                            <h3 id="form-title" class="visually-hidden">Formulario de Configuración</h3>
                             <div class="mb-3 d-flex justify-content-between align-items-center">
                                 <div class="btn-group btn-group-sm" role="group" aria-label="Configuraciones rápidas">
-                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="simple" data-subtipo="ruedas_individuales">
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="simple" data-subtipo="ruedas_individuales" aria-label="Agregar configuración S1">
                                         <i class="fas fa-circle"></i> S1
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="simple" data-subtipo="rodado_doble">
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="simple" data-subtipo="rodado_doble" aria-label="Agregar configuración D1">
                                         <i class="fas fa-circle"></i> D1
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tandem" data-subtipo="ruedas_individuales">
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tandem" data-subtipo="ruedas_individuales" aria-label="Agregar configuración S2">
                                         <i class="fas fa-circle"></i><i class="fas fa-circle"></i> S2
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tandem" data-subtipo="rodado_doble">
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tandem" data-subtipo="rodado_doble" aria-label="Agregar configuración D2">
                                         <i class="fas fa-circle"></i><i class="fas fa-circle"></i> D2
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tridem" data-subtipo="rodado_doble">
+                                    <button type="button" class="btn btn-outline-secondary agregar-rapido" data-tipo="tridem" data-subtipo="rodado_doble" aria-label="Agregar configuración D3">
                                         <i class="fas fa-circle"></i><i class="fas fa-circle"></i><i class="fas fa-circle"></i> D3
                                     </button>
                                 </div>
-                                <button type="button" class="btn btn-danger btn-sm" id="reiniciarCalculadora">
+                                <button type="button" class="btn btn-danger btn-sm" id="reiniciarCalculadora" aria-label="Limpiar todo">
                                     <i class="fas fa-trash-alt"></i> Limpiar todo
                                 </button>
                             </div>
-                            <div class="grupos-container">
+                            <div class="grupos-container" role="group" aria-labelledby="grupos-title">
+                                <h3 id="grupos-title" class="visually-hidden">Grupos de Ejes</h3>
                                 <div class="grupo-ejes card p-3 mb-3">
                                     <div class="mb-2">
-                                        <select class="form-select grupo-tipo">
+                                        <label for="grupo-tipo" class="form-label">Seleccione tipo de grupo</label>
+                                        <select class="form-select grupo-tipo" id="grupo-tipo" aria-required="true">
                                             <option value="">Seleccione tipo de grupo</option>
                                             <option value="simple">Eje Simple</option>
                                             <option value="tandem">Tándem (2 ejes)</option>
@@ -99,7 +102,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-secondary btn-sm" id="agregarGrupo">
+                            <button type="button" class="btn btn-secondary btn-sm" id="agregarGrupo" aria-label="Agregar grupo de ejes">
                                 <i class="fas fa-plus"></i> Agregar grupo de ejes
                             </button>
                         </form>
@@ -117,13 +120,14 @@
                         </h2>
                     </div>
                     <div class="card-body results-body">
-                        <div id="resultados">
+                        <div id="resultados" role="region" aria-labelledby="resultados-title">
+                            <h3 id="resultados-title" class="visually-hidden">Resultados de la Calculadora</h3>
                             <div class="resultado-principal mb-4">
                                 <div class="configuracion mb-2">
                                     <i class="fas fa-cogs"></i>
                                     <span id="pesoMaximo-config">Configure los grupos de ejes</span>
                                 </div>
-                                <div class="image-container text-center mb-4" id="contenedor-imagenes">
+                                <div class="image-container text-center mb-4" id="contenedor-imagenes" role="img" aria-label="Imágenes de configuraciones">
                                     <!-- Las imágenes se agregarán aquí dinámicamente -->
                                 </div>
                                 <div class="peso-container">
@@ -213,9 +217,11 @@
             if (instrucciones.style.display === 'none') {
                 instrucciones.style.display = 'block';
                 this.textContent = 'Ocultar Instrucciones';
+                this.setAttribute('aria-expanded', 'true');
             } else {
                 instrucciones.style.display = 'none';
                 this.textContent = 'Mostrar Instrucciones';
+                this.setAttribute('aria-expanded', 'false');
             }
         });
     </script>

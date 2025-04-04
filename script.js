@@ -1,4 +1,6 @@
+// Definición de las plantillas de configuración de ejes
 const TEMPLATES = {
+    // Plantilla para eje simple
     simple: `
         <div class="mb-2">
             <label class="form-label">Tipo de Rodado</label>
@@ -9,6 +11,7 @@ const TEMPLATES = {
             </select>
         </div>
     `,
+    // Plantilla para tándem
     tandem: `
         <div class="mb-2">
             <label class="form-label">Tipo de Rodado</label>
@@ -25,6 +28,7 @@ const TEMPLATES = {
             <input type="number" step="0.01" class="form-control distancia-input" required>
         </div>
     `,
+    // Plantilla para trídem
     tridem: `
         <div class="mb-2">
             <label class="form-label">Tipo de Rodado</label>
@@ -41,6 +45,7 @@ const TEMPLATES = {
             <input type="number" step="0.01" class="form-control distancia2-input" required>
         </div>
     `,
+    // Plantilla para configuración mixta
     mixto: `
         <div class="tandem-section mb-3">
             <h6>Configuración del Tándem</h6>
@@ -74,6 +79,7 @@ const TEMPLATES = {
     `
 };
 
+// Definición de límites de peso para cada tipo de configuración
 const limitesPeso = {
     'eje_simple_ruedas_individuales': 6000,
     'eje_simple_rodado_doble': 10500,
@@ -86,8 +92,10 @@ const limitesPeso = {
     'tandem_rodado_doble_superanchas': 17000
 };
 
+// Definición del peso máximo absoluto permitido
 const PESO_MAXIMO_ABSOLUTO = 75; // toneladas
 
+// Definición de validaciones para las configuraciones de ejes
 const VALIDACIONES = {
     tandem: {
         minDistancia: 1.20,
@@ -106,10 +114,12 @@ const VALIDACIONES = {
 
 // Cargar configuraciones desde el archivo CSV
 function cargarConfiguraciones() {
+    // Realiza una solicitud GET para obtener el archivo CSV
     $.get('configuraciones.csv', function(data) {
         const configuraciones = [];
         const lineas = data.split('\n');
         
+        // Procesar cada línea del archivo CSV
         lineas.forEach(linea => {
             const [numero, configuracion, pesoMaximo, largo, ancho, alto, imagen] = linea.split(';');
             configuraciones.push({
@@ -131,7 +141,7 @@ function cargarConfiguraciones() {
 // Llamar a la función para cargar configuraciones al inicio
 cargarConfiguraciones();
 
-// Mover la función fuera del document.ready
+// Función para actualizar los cálculos basados en las configuraciones ingresadas
 function actualizarCalculos() {
     // Limpiar el contenedor de imágenes y configuraciones antes de agregar nuevas
     $('#contenedor-imagenes').empty();
@@ -139,6 +149,7 @@ function actualizarCalculos() {
     $('#aclaraciones').empty(); // Limpiar aclaraciones anteriores
     $("#toleranciasAclaracion").removeClass("d-none");
 
+    // Verificar si hay al menos un grupo de ejes configurado
     if ($('.grupo-ejes').length <= 1) {
         $('#pesoMaximo-config').text('Configure los grupos de ejes');
         $('#pesoMaximo-peso').text('--');
@@ -155,26 +166,61 @@ function actualizarCalculos() {
     $('.grupo-ejes').each(function() {
         const tipo = $(this).find('.grupo-tipo').val();
         
+        // Validar distancias para configuraciones de tipo tándem
         if (tipo === 'tandem') {
             const distancia = parseFloat($(this).find('.distancia-input').val());
-            if (distancia && (distancia < VALIDACIONES.tandem.minDistancia || distancia > VALIDACIONES.tandem.maxDistancia)) {
+            if (isNaN(distancia) || distancia <= 0) {
                 distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia-input'), "La distancia debe ser un número positivo.", false);
                 return false; // break the loop
+            } else if (distancia < VALIDACIONES.tandem.minDistancia || distancia > VALIDACIONES.tandem.maxDistancia) {
+                distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia-input'), VALIDACIONES.tandem.mensaje, false);
+                return false; // break the loop
+            } else {
+                mostrarValidacion($(this).find('.distancia-input'), "Distancia válida.", true);
             }
-        } else if (tipo === 'tridem') {
+        } 
+        // Validar distancias para configuraciones de tipo trídem
+        else if (tipo === 'tridem') {
             const distancia1 = parseFloat($(this).find('.distancia1-input').val());
             const distancia2 = parseFloat($(this).find('.distancia2-input').val());
             const distanciaTotal = distancia1 + distancia2;
-            
-            if ((distancia1 && (distancia1 < VALIDACIONES.tridem.minDistancia || distancia1 > VALIDACIONES.tridem.maxDistancia)) ||
-                (distancia2 && (distancia2 < VALIDACIONES.tridem.minDistancia || distancia2 > VALIDACIONES.tridem.maxDistancia)) ||
-                (distancia1 && distancia2 && (distanciaTotal < VALIDACIONES.tridem.minDistanciaTotal || distanciaTotal > VALIDACIONES.tridem.maxDistanciaTotal))) {
+
+            if (isNaN(distancia1) || distancia1 <= 0) {
                 distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia1-input'), "La distancia 1 debe ser un número positivo.", false);
+                return false; // break the loop
+            } else if (distancia1 < VALIDACIONES.tridem.minDistancia || distancia1 > VALIDACIONES.tridem.maxDistancia) {
+                distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia1-input'), VALIDACIONES.tridem.mensaje, false);
+                return false; // break the loop
+            } else {
+                mostrarValidacion($(this).find('.distancia1-input'), "Distancia válida.", true);
+            }
+
+            if (isNaN(distancia2) || distancia2 <= 0) {
+                distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia2-input'), "La distancia 2 debe ser un número positivo.", false);
+                return false; // break the loop
+            } else if (distancia2 < VALIDACIONES.tridem.minDistancia || distancia2 > VALIDACIONES.tridem.maxDistancia) {
+                distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia2-input'), VALIDACIONES.tridem.mensaje, false);
+                return false; // break the loop
+            } else {
+                mostrarValidacion($(this).find('.distancia2-input'), "Distancia válida.", true);
+            }
+
+            if (distanciaTotal < VALIDACIONES.tridem.minDistanciaTotal || distanciaTotal > VALIDACIONES.tridem.maxDistanciaTotal) {
+                distanciasValidas = false;
+                mostrarValidacion($(this).find('.distancia1-input'), VALIDACIONES.tridem.mensajeTotal, false);
+                mostrarValidacion($(this).find('.distancia2-input'), VALIDACIONES.tridem.mensajeTotal, false);
                 return false; // break the loop
             }
         }
     });
 
+    // Si hay distancias inválidas, mostrar mensaje y limpiar resultados
     if (!distanciasValidas) {
         $('#pesoMaximo-config').text('Configure los grupos de ejes');
         $('#pesoMaximo-peso').text('--');
@@ -310,7 +356,7 @@ function actualizarCalculos() {
         configuracionesCoincidentes.forEach(config => {
             let configuracionTexto = `Configuración Nº${config.numero}, Largo: ${config.largo}m, Ancho: ${config.ancho}m, Alto: ${config.alto}m`;
             $('#pesoMaximo-config').append(`<div>${configuracionTexto}</div>`);
-            $('#contenedor-imagenes').append(`<img src="img/${config.imagen}" alt="Configuración" class="img-fluid">`);
+            $('#contenedor-imagenes').append(`<img src="img/${config.imagen}" alt="Configuración" class="img-fluid" title="Configuración Nº${config.numero}, Tipo: ${config.configuracion}, Alto: ${config.alto}m, Ancho: ${config.ancho}m, Largo: ${config.largo}m">`);
         });
     } else {
         $('#contenedor-imagenes').empty(); // Limpiar si no hay coincidencias
