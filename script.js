@@ -324,7 +324,7 @@ function actualizarCalculos() {
 
     // Si es una excepción, mostrar el peso máximo permitido
     if (resultado.esExcepcion) {
-        explicacionEjes += `<br><strong>Nota:</strong> Aunque la suma total es ${totalEjes.toFixed(2)} toneladas, el peso máximo permitido es 45 toneladas debido a la excepción.`;
+        explicacionEjes += `<br><strong>Nota:</strong> Aunque la suma total es ${totalEjes.toFixed(2)} toneladas, el peso máximo permitido es 45 toneladas debido a la excepción. De esta manera se evita el salto a la exigencia de 6 CV/t.`;
     }
     
     const relacionPesoPotencia = (resultado.pesoMaximoEjes / 1000) > 45 ? 6 : 4.25;
@@ -339,7 +339,7 @@ function actualizarCalculos() {
         <strong>La potencia mínima requerida es ${Math.ceil(resultado.potenciaMinima)} CV</strong>`;
 
     if (resultado.esExcepcion) {
-        explicacionFinal += '<br><strong>Nota:</strong> Esta configuración "S1-D1-D1-D1-D1" es una excepción y tiene un peso máximo de 45 TN.';
+        explicacionFinal += '<br><strong>Nota:</strong> Esta configuración "S1-D1-D1-D1-D1" es una excepción y tiene un peso máximo de 45 TN. De esta manera se evita el salto a la exigencia de 6 CV/t.';
     }
 
     $('#explicacionEjes').html(explicacionEjes);
